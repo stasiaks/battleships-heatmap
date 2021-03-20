@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE DataKinds #-}
 
 module Main (Main.main) where
 
@@ -14,32 +15,35 @@ import GI.Gtk ( Window(..)
               , Button (..), buttonClicked
               )
 import GI.Gtk.Declarative.Container.Grid
-import Data.Grid (toNestedLists, Grid (toVector))
-import Data.Vector (fromList, imap)
+import Data.Grid (Grid (toVector), cell, Coord)
+import Data.Vector (imap)
 import Data.Text (Text, pack)
+import Data.Decimal (roundTo)
 
-newtype State =
-    State Board
+data State =
+    State Board [PossibleBoard]
 
 data Event
     = Closed
     | Print
+    | Clicked Int
   
 fieldLabel :: Field -> Text
 fieldLabel Hit = "O"
 fieldLabel Miss = "X"
-fieldLabel (Chance p) = pack $ show p ++ "%"
+fieldLabel (Chance p) = pack $ show (roundTo 2 (100 * p)) ++ "%"
 
 toGridChild :: Int -> Field -> GridChild Event
-toGridChild index field = GridChild { properties = defaultGridChildProperties { leftAttach = fromIntegral $ index `mod` 10
-                                                                              , topAttach = fromIntegral $ index `div` 10
-                                                                              }
+toGridChild index field = GridChild { properties = defaultGridChildProperties { leftAttach = (\[x,_] -> fromIntegral x) $ indexToCoord index
+                                                                              , topAttach = (\[_,y] -> fromIntegral y) $ indexToCoord index                                                                              }
                                     , child = widget Button [ #label := fieldLabel field
-                                                            , on #clicked Print 
+                                                            , #vexpand := True
+                                                            , #hexpand := True
+                                                            , on #clicked (Clicked index)
                                                             ] }
 
 view' :: State -> AppView Window Event
-view' (State board) =
+view' (State board _) =
     bin
         Window
         [ #title := "Battleships"
@@ -54,13 +58,14 @@ view' (State board) =
 
 update' :: State -> Event -> Transition State Event
 update' _ Closed = Exit
-update' (State board) Print = Transition (State board) (print board >> return Nothing)
+update' (State board possible) Print = Transition (State board possible) (print board >> return Nothing)
+update' (State board possible) (Clicked index) = Transition (State board possible) (print (indexToCoord index) >> return Nothing)
 
 main :: IO ()
 main = void $ run App
     { view = view'
     , update = update'
     , inputs = []
-    , initialState = State freshBoard 
+    , initialState = State (calculateChances freshBoard allBoards) allBoards 
     }
 
