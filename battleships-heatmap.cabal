@@ -1,0 +1,80 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           battleships-heatmap
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/stasiaks/battleships-heatmap#readme>
+homepage:       https://github.com/stasiaks/battleships-heatmap#readme
+bug-reports:    https://github.com/stasiaks/battleships-heatmap/issues
+author:         Sebastian Stasiak
+maintainer:     arionw@live.com
+copyright:      2021 Sebastian Stasiak
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/stasiaks/battleships-heatmap
+
+library
+  exposed-modules:
+      Lib
+  other-modules:
+      Paths_battleships_heatmap
+  hs-source-dirs:
+      src
+  build-depends:
+      Decimal
+    , base >=4.7 && <5
+    , gi-gtk
+    , gi-gtk-declarative
+    , gi-gtk-declarative-app-simple
+    , grids
+    , text
+    , vector
+  default-language: Haskell2010
+
+executable battleships-heatmap-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_battleships_heatmap
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      Decimal
+    , base >=4.7 && <5
+    , battleships-heatmap
+    , gi-gtk
+    , gi-gtk-declarative
+    , gi-gtk-declarative-app-simple
+    , grids
+    , text
+    , vector
+  default-language: Haskell2010
+
+test-suite battleships-heatmap-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_battleships_heatmap
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      Decimal
+    , base >=4.7 && <5
+    , battleships-heatmap
+    , gi-gtk
+    , gi-gtk-declarative
+    , gi-gtk-declarative-app-simple
+    , grids
+    , text
+    , vector
+  default-language: Haskell2010

@@ -1,0 +1,54 @@
+name:                battleships-heatmap
+version:             0.1.0.0
+github:              "stasiaks/battleships-heatmap"
+license:             BSD3
+author:              "Sebastian Stasiak"
+maintainer:          "arionw@live.com"
+copyright:           "2021 Sebastian Stasiak"
+
+extra-source-files:
+- README.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/stasiaks/battleships-heatmap#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- text
+- vector
+- Decimal
+- grids
+- gi-gtk
+- gi-gtk-declarative
+- gi-gtk-declarative-app-simple
+
+library:
+  source-dirs: src
+
+executables:
+  battleships-heatmap-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - battleships-heatmap
+
+tests:
+  battleships-heatmap-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - battleships-heatmap
